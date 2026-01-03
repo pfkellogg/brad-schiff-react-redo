@@ -1,6 +1,13 @@
 import React, { useEffect } from 'react'
 
 function HeaderLoggedIn(props) {
+  function handleLogOut() {
+    props.setLoggedIn(false)
+    localStorage.removeItem('complexappToken')
+    localStorage.removeItem('complexappUsername')
+    localStorage.removeItem('complexappAvatar')
+  }
+
   return (
     <div className='flex-row my-3 my-md-0'>
       <a
@@ -19,7 +26,7 @@ function HeaderLoggedIn(props) {
       >
         <img
           className='small-header-avatar'
-          src='https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128'
+          src={localStorage.getItem('complexappAvatar')}
         />
       </a>
       <a
@@ -29,7 +36,7 @@ function HeaderLoggedIn(props) {
         Create Post
       </a>
       <button
-        onClick={() => props.setLoggedIn(false)}
+        onClick={handleLogOut}
         className='btn btn-sm btn-secondary'
       >
         Sign Out
