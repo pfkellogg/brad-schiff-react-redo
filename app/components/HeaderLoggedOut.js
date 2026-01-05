@@ -12,10 +12,7 @@ function HeaderLoggedOut(props) {
     try {
       const response = await Axios.post('/login', { username, password })
       if (response.data) {
-        localStorage.setItem('complexappToken', response.data.token)
-        localStorage.setItem('complexappUsername', response.data.username)
-        localStorage.setItem('complexappAvatar', response.data.avatar)
-        appDispatch({ type: 'login' })
+        appDispatch({ type: 'login', data: response.data })
       } else {
         console.log('Incorrect username/password')
       }
@@ -25,10 +22,7 @@ function HeaderLoggedOut(props) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className='mb-0 pt-2 pt-md-0'
-    >
+    <form onSubmit={handleSubmit} className='mb-0 pt-2 pt-md-0'>
       <div className='row align-items-center'>
         <div className='col-md mr-0 pr-md-0 mb-3 mb-md-0'>
           <input

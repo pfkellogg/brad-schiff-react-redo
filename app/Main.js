@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from 'react'
+import React, { useState, useEffect, useReducer } from 'react'
 import ReactDOM from 'react-dom/client'
 import { useImmerReducer } from 'use-immer'
 
@@ -24,13 +24,19 @@ import FlashMessages from './components/FlashMessages'
 function Main() {
   const initialState = {
     loggedIn: Boolean(localStorage.getItem('complexappToken')),
-    flashMessages: []
+    flashMessages: [],
+    user: {
+      token: localStorage.getItem('complexappToken'),
+      username: localStorage.getItem('complexappUsername'),
+      avatar: localStorage.getItem('complexappAvatar')
+    }
   }
 
   function ourReducer(draft, action) {
     switch (action.type) {
       case 'login':
         draft.loggedIn = true
+        draft.user = action.data
         return
       case 'logout':
         draft.loggedIn = false
@@ -43,6 +49,18 @@ function Main() {
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState)
 
+  useEffect(() => {
+    if (state.loggedIn) {
+      localStorage.setItem('complexappToken', state.user.token)
+      localStorage.setItem('complexappUsername', state.user.username)
+      localStorage.setItem('complexappAvatar', state.user.avatar)
+    } else {
+      localStorage.removeItem('complexappToken')
+      localStorage.removeItem('complexappUsername')
+      localStorage.removeItem('complexappAvatar')
+    }
+  }, [state.loggedIn])
+
   return (
     <StateContext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>
@@ -51,11 +69,8 @@ function Main() {
           <Header />
           <Routes>
             <Route path='/' element={state.loggedIn ? <Home /> : <HomeGuest />} />
-
             <Route path='/post/:id' element={<ViewSinglePost />} />
-
             <Route path='/create-post' element={<CreatePost />} />
-
             <Route path='/about-us' element={<About />} />
             <Route path='/terms' element={<Terms />} />
           </Routes>
