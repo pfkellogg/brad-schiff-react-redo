@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react'
 import Axios from 'axios'
-import ExampleContext from '../ExampleContext'
+import DispatchContext from '../DispatchContext'
 
 function HeaderLoggedOut(props) {
-  const { setLoggedIn } = useContext(ExampleContext)
+  const appDispatch = useContext(DispatchContext)
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
 
@@ -15,7 +15,7 @@ function HeaderLoggedOut(props) {
         localStorage.setItem('complexappToken', response.data.token)
         localStorage.setItem('complexappUsername', response.data.username)
         localStorage.setItem('complexappAvatar', response.data.avatar)
-        setLoggedIn(true)
+        appDispatch({ type: 'login' })
       } else {
         console.log('Incorrect username/password')
       }
@@ -32,7 +32,7 @@ function HeaderLoggedOut(props) {
       <div className='row align-items-center'>
         <div className='col-md mr-0 pr-md-0 mb-3 mb-md-0'>
           <input
-            onChange={(e) => {
+            onChange={e => {
               setUsername(e.target.value)
             }}
             name='username'
@@ -44,7 +44,7 @@ function HeaderLoggedOut(props) {
         </div>
         <div className='col-md mr-0 pr-md-0 mb-3 mb-md-0'>
           <input
-            onChange={(e) => {
+            onChange={e => {
               setPassword(e.target.value)
             }}
             name='password'

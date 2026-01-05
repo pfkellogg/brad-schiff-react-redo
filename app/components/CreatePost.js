@@ -2,13 +2,13 @@ import React, { useEffect, useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Page from './Page'
 import Axios from 'axios'
-import ExampleContext from '../ExampleContext'
+import DispatchContext from '../DispatchContext'
 
 function CreatePost(props) {
   const [title, setTitle] = useState()
   const [body, setBody] = useState()
   const navigate = useNavigate()
-  const { addFlashMessage } = useContext(ExampleContext)
+  const appDispatch = useContext(DispatchContext)
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -16,7 +16,7 @@ function CreatePost(props) {
     try {
       const response = await Axios.post('/create-post', { title, body, token: localStorage.getItem('complexappToken') })
 
-      addFlashMessage('Congrats, you successfully created a post!')
+      appDispatch({ type: 'flashMessage', value: 'Congrats, you created a new post.' })
 
       // Redirect to new post URL
       navigate(`/post/${response.data}`)
@@ -37,7 +37,7 @@ function CreatePost(props) {
             <small>Title</small>
           </label>
           <input
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={e => setTitle(e.target.value)}
             autoFocus
             name='title'
             id='post-title'
@@ -56,7 +56,7 @@ function CreatePost(props) {
             <small>Body Content</small>
           </label>
           <textarea
-            onChange={(e) => setBody(e.target.value)}
+            onChange={e => setBody(e.target.value)}
             name='body'
             id='post-body'
             className='body-content tall-textarea form-control'
