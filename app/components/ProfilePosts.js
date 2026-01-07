@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Axios from 'axios'
 import { useParams, Link } from 'react-router-dom'
-import LoadingDotsIcon from './LodingDotsIcon'
+import LoadingDotsIcon from './LoadingDotsIcon'
 
 function ProfilePosts() {
   const { username } = useParams()
