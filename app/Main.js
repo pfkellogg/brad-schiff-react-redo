@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useReducer } from 'react'
+import React, { useRef, useState, useEffect, useReducer } from 'react'
 import ReactDOM from 'react-dom/client'
 import { useImmerReducer } from 'use-immer'
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-
+import { CSSTransition } from 'react-transition-group'
 import Axios from 'axios'
 Axios.defaults.baseURL = 'http://localhost:8080/'
 
@@ -26,6 +25,8 @@ import NotFound from './components/NotFound'
 import Search from './components/Search'
 
 function Main() {
+  const searchRef = useRef(null)
+
   const initialState = {
     loggedIn: Boolean(localStorage.getItem('complexappToken')),
     flashMessages: [],
@@ -88,7 +89,11 @@ function Main() {
             <Route path='/terms' element={<Terms />} />
             <Route path='*' element={<NotFound />} />
           </Routes>
-          {state.isSearchOpen ? <Search /> : ''}
+          <CSSTransition nodeRef={searchRef} timeout={330} in={state.isSearchOpen} classNames='search-overlay' unmountOnExit>
+            <div ref={searchRef} className='search-overlay'>
+              <Search />
+            </div>
+          </CSSTransition>
           <Footer />
         </BrowserRouter>
       </DispatchContext.Provider>

@@ -1,37 +1,41 @@
-import React, { useEffect, useContext } from "react"
-import { Link } from "react-router-dom"
-import DispatchContext from "../DispatchContext"
-import StateContext from "../StateContext"
+import React, { useEffect, useContext } from 'react'
+import { Link } from 'react-router-dom'
+import DispatchContext from '../DispatchContext'
+import StateContext from '../StateContext'
+import { Tooltip as ReactTooltip } from 'react-tooltip'
 
 function HeaderLoggedIn(props) {
   const appDispatch = useContext(DispatchContext)
   const appState = useContext(StateContext)
 
   function handleLogout() {
-    appDispatch({ type: "logout" })
+    appDispatch({ type: 'logout' })
   }
 
   function handleSearchIcon(e) {
     e.preventDefault()
-    appDispatch({ type: "openSearch" })
+    appDispatch({ type: 'openSearch' })
   }
 
   return (
-    <div className="flex-row my-3 my-md-0">
-      <a onClick={handleSearchIcon} href="#" className="text-white mr-2 header-search-icon">
-        <i className="fas fa-search"></i>
+    <div className='flex-row my-3 my-md-0'>
+      <a data-tooltip-id='search' data-tooltip-content='Search' onClick={handleSearchIcon} href='#' className='text-white mr-2 header-search-icon'>
+        <i className='fas fa-search'></i>
       </a>
-      <span className="mr-2 header-chat-icon text-white">
-        <i className="fas fa-comment"></i>
-        <span className="chat-count-badge text-white"> </span>
+      <ReactTooltip id='search' className='custom-tooltip' place='bottom' />{' '}
+      <span data-tooltip-id='chat' data-tooltip-content='Chat' className='mr-2 header-chat-icon text-white'>
+        <i className='fas fa-comment'></i>
+        <span className='chat-count-badge text-white'> </span>
       </span>
-      <Link to={`/profile/${appState.user.username}`} className="mr-2">
-        <img className="small-header-avatar" src={appState.user.avatar} />
+      <ReactTooltip id='chat' className='custom-tooltip' place='bottom' />{' '}
+      <Link data-tooltip-id='profile' data-tooltip-content='My Profile' to={`/profile/${appState.user.username}`} className='mr-2'>
+        <img className='small-header-avatar' src={appState.user.avatar} />
       </Link>
-      <Link className="btn btn-sm btn-success mr-2" to="/create-post">
+      <ReactTooltip id='profile' className='custom-tooltip' place='bottom' />{' '}
+      <Link className='btn btn-sm btn-success mr-2' to='/create-post'>
         Create Post
-      </Link>
-      <button onClick={handleLogout} className="btn btn-sm btn-secondary">
+      </Link>{' '}
+      <button onClick={handleLogout} className='btn btn-sm btn-secondary'>
         Sign Out
       </button>
     </div>
