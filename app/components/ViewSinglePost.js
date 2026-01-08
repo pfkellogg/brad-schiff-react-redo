@@ -1,15 +1,15 @@
-import React, { useEffect, useState, useContext } from 'react'
-import Page from './Page'
-import { useParams, Link, useNavigate } from 'react-router-dom'
-import Axios from 'axios'
-import LoadingDotsIcon from './LoadingDotsIcon'
-import ReactMarkdown from 'react-markdown'
-import { Tooltip as ReactTooltip } from 'react-tooltip'
-import NotFound from './NotFound'
-import StateContext from '../StateContext'
-import DispatchContext from '../DispatchContext'
+import React, { useEffect, useState, useContext } from "react"
+import Page from "./Page"
+import { useParams, Link, useNavigate } from "react-router-dom"
+import Axios from "axios"
+import LoadingDotsIcon from "./LoadingDotsIcon"
+import ReactMarkdown from "react-markdown"
+import { Tooltip as ReactTooltip } from "react-tooltip"
+import NotFound from "./NotFound"
+import StateContext from "../StateContext"
+import DispatchContext from "../DispatchContext"
 
-function ViewSinglePost() {
+function ViewSinglePost(props) {
   const navigate = useNavigate()
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
@@ -26,7 +26,7 @@ function ViewSinglePost() {
         setPost(response.data)
         setIsLoading(false)
       } catch (e) {
-        console.log('There was a problem or the request was cancelled.')
+        console.log("There was a problem or the request was cancelled.")
       }
     }
     fetchPost()
@@ -41,7 +41,7 @@ function ViewSinglePost() {
 
   if (isLoading)
     return (
-      <Page title='...'>
+      <Page title="...">
         <LoadingDotsIcon />
       </Page>
     )
@@ -57,50 +57,50 @@ function ViewSinglePost() {
   }
 
   async function deleteHandler() {
-    const areYouSure = window.confirm('Do you really want to delete this post?')
+    const areYouSure = window.confirm("Do you really want to delete this post?")
     if (areYouSure) {
       try {
         const response = await Axios.delete(`/post/${id}`, { data: { token: appState.user.token } })
-
-        if (response.data == 'Success') {
+        if (response.data == "Success") {
           // 1. display a flash message
-          appDispatch({ type: 'flashMessage', value: 'Post was successfully deleted.' })
-          // 2. redirect to profile page
+          appDispatch({ type: "flashMessage", value: "Post was successfully deleted." })
+
+          // 2. redirect back to the current user's profile
           navigate(`/profile/${appState.user.username}`)
         }
       } catch (e) {
-        console.log('There was a problem.')
+        console.log("There was a problem.")
       }
     }
   }
 
   return (
     <Page title={post.title}>
-      <div className='d-flex justify-content-between'>
+      <div className="d-flex justify-content-between">
         <h2>{post.title}</h2>
         {isOwner() && (
-          <span className='pt-2'>
-            <Link to={`/post/${post._id}/edit`} data-tooltip-content='Edit' data-tooltip-id='edit' className='text-primary mr-2'>
-              <i className='fas fa-edit'></i>
+          <span className="pt-2">
+            <Link to={`/post/${post._id}/edit`} data-tooltip-content="Edit" data-tooltip-id="edit" className="text-primary mr-2">
+              <i className="fas fa-edit"></i>
             </Link>
-            <ReactTooltip id='edit' className='custom-tooltip' />{' '}
-            <Link onClick={deleteHandler} className='delete-post-button text-danger' to='#' data-tooltip-content='Delete' data-tooltip-id='delete'>
-              <i className='fas fa-trash'></i>
-            </Link>
-            <ReactTooltip id='delete' className='custom-tooltip' />
+            <ReactTooltip id="edit" className="custom-tooltip" />{" "}
+            <a onClick={deleteHandler} data-tooltip-content="Delete" data-tooltip-id="delete" className="delete-post-button text-danger">
+              <i className="fas fa-trash"></i>
+            </a>
+            <ReactTooltip id="delete" className="custom-tooltip" />
           </span>
         )}
       </div>
 
-      <p className='text-muted small mb-4'>
+      <p className="text-muted small mb-4">
         <Link to={`/profile/${post.author.username}`}>
-          <img className='avatar-tiny' src={post.author.avatar} />
+          <img className="avatar-tiny" src={post.author.avatar} />
         </Link>
         Posted by <Link to={`/profile/${post.author.username}`}>{post.author.username}</Link> on {dateFormatted}
       </p>
 
-      <div className='body-content'>
-        <ReactMarkdown children={post.body} />
+      <div className="body-content">
+        <ReactMarkdown children={post.body} allowedElements={["p", "br", "strong", "em", "h1", "h2", "h3", "h4", "h5", "h6", "ul", "ol", "li"]} />
       </div>
     </Page>
   )
